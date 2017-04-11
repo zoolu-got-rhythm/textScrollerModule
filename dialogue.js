@@ -51,16 +51,8 @@ function Dialogue(imageSrc, data) {
 
     this.spawnSound = document.createElement("audio");
     this.spawnSound.src = "spawn.wav";
-
-
-
-
 }
 
-// roll{
-// if (currentCharacterPosition == currentTextData.length) isScrolling = false;
-
-// }
 Dialogue.prototype.roll = function(){
     console.log(this.proceedDialogueIcon);
     window.requestAnimationFrame(animate);
@@ -70,19 +62,16 @@ Dialogue.prototype.roll = function(){
     var self = this;
     function animate(){
         if(self.currentCharacterPosition < self.textData.length + 1) {
-            // console.log("is running");
-            // start cutting the text down after 60 characters
+            // start cutting the text down after 80 characters
             if(self.currentDialogueState.length == 80) {
                 self.chopOffXAmountOfCharactersFromDialogueText(30);
             }
             self.currentCharacterPosition++;
             self.currentDialogueState += self.getCurrentCharacterPosition();
-            // console.log(self.currentDialogueState);
             window.requestAnimationFrame(animate);
         } else{
             console.log("finished");
             self.textIsScrolling = false;
-            // self.textCutOffPoint = 0;
             self.currentDialogueState += self.proceedDialogueIcon;
             self.stopTalking();
             window.cancelAnimationFrame(animate);
@@ -134,12 +123,4 @@ Dialogue.prototype.getElement = function(){
     return this.container;
 }
 
-// app
-window.onload = function(){
-    var msg = "Hello citizens of the world, we have a situation on our hands with Mr Trump. test data, more and more and moarrrrrrrrrsaddsr sdfdsaffsd dsfsaf fsdfsadf sdfsdaf dsafsadfsdafads sadf";
-    var textScroller = new Dialogue("http://rs758.pbsrc.com/albums/xx221/B_Oceander/Obama/Talking_Head.gif~c200", msg);
-    var element = textScroller.getElement();
-    document.body.appendChild(element);
-    textScroller.roll();
-}
 
