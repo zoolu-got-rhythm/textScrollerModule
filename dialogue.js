@@ -2,11 +2,25 @@
  * Created by Slime on 11/04/2017.
  */
 
+
+/** TODO:
+ *
+ *
+ * @param imageSrc
+ * @param data
+ * @constructor
+ */
+
+
+
 function Dialogue(imageSrc, data) {
     this.imageSrc = imageSrc;
     this.textData = data;
     this.currentCharacterPosition = 0;
     this.textIsScrolling = false;
+    this.textCutOffPoint = 0;
+    this.currentDialogueState = "";
+    this.proceedDialogueIcon = "&#x21B5;"
 
     // create image element for talking face
     this.image = document.createElement("img");
@@ -48,6 +62,7 @@ function Dialogue(imageSrc, data) {
 
 // }
 Dialogue.prototype.roll = function(){
+    console.log(this.proceedDialogueIcon);
     window.requestAnimationFrame(animate);
     this.textIsScrolling = true;
     this.playSpawnSound();
@@ -55,12 +70,20 @@ Dialogue.prototype.roll = function(){
     var self = this;
     function animate(){
         if(self.currentCharacterPosition < self.textData.length + 1) {
-            console.log("is running");
+            // console.log("is running");
+            // start cutting the text down after 60 characters
+            if(self.currentDialogueState.length == 80) {
+                self.chopOffXAmountOfCharactersFromDialogueText(30);
+            }
             self.currentCharacterPosition++;
+            self.currentDialogueState += self.getCurrentCharacterPosition();
+            // console.log(self.currentDialogueState);
             window.requestAnimationFrame(animate);
         } else{
             console.log("finished");
             self.textIsScrolling = false;
+            // self.textCutOffPoint = 0;
+            self.currentDialogueState += self.proceedDialogueIcon;
             self.stopTalking();
             window.cancelAnimationFrame(animate);
         }
@@ -68,9 +91,19 @@ Dialogue.prototype.roll = function(){
     }
 }
 
-Dialogue.prototype.displayCurrentDialogueState = function(){
-    this.textBox.innerHTML = this.textData.substring(0, this.currentCharacterPosition - 1);
+Dialogue.prototype.displayCurrentDialogueState = function() {
+    this.textBox.innerHTML = this.currentDialogueState;
 }
+
+Dialogue.prototype.getCurrentCharacterPosition = function(){
+    return this.textData.substring(this.currentCharacterPosition, this.currentCharacterPosition - 1);
+}
+
+Dialogue.prototype.chopOffXAmountOfCharactersFromDialogueText = function(n){
+    this.currentDialogueState = this.currentDialogueState.substring(n, this.currentDialogueState.length);
+}
+
+
 
 Dialogue.prototype.talk = function(){
     this.playTalkSound();
@@ -101,8 +134,9 @@ Dialogue.prototype.getElement = function(){
     return this.container;
 }
 
+// app
 window.onload = function(){
-    var msg = "Hello citizens of the world, we have a situation on our hands with Mr Trump.";
+    var msg = "Hello citizens of the world, we have a situation on our hands with Mr Trump. test data, more and more and moarrrrrrrrrsaddsr sdfdsaffsd dsfsaf fsdfsadf sdfsdaf dsafsadfsdafads sadf";
     var textScroller = new Dialogue("http://rs758.pbsrc.com/albums/xx221/B_Oceander/Obama/Talking_Head.gif~c200", msg);
     var element = textScroller.getElement();
     document.body.appendChild(element);
